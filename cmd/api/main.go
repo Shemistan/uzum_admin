@@ -4,9 +4,12 @@ import (
 	"github.com/Shemistan/uzum_admin/cmd/api/serv"
 	"github.com/Shemistan/uzum_admin/cmd/conf"
 	"github.com/Shemistan/uzum_admin/internal/models"
+	desc "github.com/Shemistan/uzum_admin/pkg/auth_v1"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 )
 
@@ -31,7 +34,15 @@ func main() {
 		}
 	}()
 
-	srv, err := serv.GetServ(cfg, db)
+	conn, err := grpc.Dial(cfg.App.AuthClient, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("failed to connect to server: %v", err)
+	}
+	defer conn.Close()
+
+	c := desc.NewAuthV1Client(conn)
+
+	srv, err := serv.GetServ(cfg, db, c)
 	if err != nil {
 		log.Fatal("failed to get serv", err.Error())
 	}

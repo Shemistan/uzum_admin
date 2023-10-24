@@ -5,16 +5,17 @@ import (
 	"github.com/Shemistan/uzum_admin/internal/models"
 	"github.com/Shemistan/uzum_admin/internal/service"
 	"github.com/Shemistan/uzum_admin/internal/storage/postgres"
+	desc "github.com/Shemistan/uzum_admin/pkg/auth_v1"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"net/http"
 	"time"
 )
 
-func GetServ(cnf models.Config, db *sqlx.DB) (*http.Server, error) {
+func GetServ(cnf models.Config, db *sqlx.DB, c desc.AuthV1Client) (*http.Server, error) {
 
 	store := postgres.NewRepoPostgres(db)
-	deliveryService := service.NewService(store)
+	deliveryService := service.NewService(store, c)
 	handler := handlers.NewHandler(deliveryService)
 
 	router := mux.NewRouter()
