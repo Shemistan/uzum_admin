@@ -3,13 +3,12 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/Shemistan/uzum_admin/generated/protos/login_v1"
 	"github.com/Shemistan/uzum_admin/internal/models"
 	"github.com/google/uuid"
 )
 
 func (s *AdminService) GetStatistics(ctx context.Context) (*models.Statistics, error) {
-	user, err := s.loginClient.GetData(ctx, &login_v1.GetData_Request{EndpointAddress: ""})
+	user, err := s.GetUser(ctx)
 	if err != nil {
 		return nil, err
 	}
