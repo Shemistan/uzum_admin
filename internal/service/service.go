@@ -2,23 +2,29 @@ package service
 
 import (
 	"context"
-	"github.com/Shemistan/uzum_admin/internal/models"
-	"github.com/Shemistan/uzum_admin/internal/storage"
-	desc "github.com/Shemistan/uzum_admin/pkg/auth_v1"
+	"github.com/Shemistan/uzum_admin/generated/protos/login_v1"
+	"github.com/Shemistan/uzum_admin/internal/db"
+	"github.com/google/uuid"
 )
 
-type IService interface {
-	AddProduct(ctx context.Context, req *models.Product) (int64, error)
-	GetAllProducts(ctx context.Context) ([]*models.Product, error)
-}
-
-func NewService(storage storage.IStorage, authClient desc.AuthV1Client) IService {
-	return &service{store: storage,
-		authClient: authClient,
+type (
+	IStorage interface {
+		CreateProduct(ctx context.Context, arg db.CreateProductParams) error
+		UpdateProduct(ctx context.Context, arg db.UpdateProductParams) error
+		DeleteProduct(ctx context.Context, id uuid.UUID) error
+		GetProduct(ctx context.Context, id uuid.UUID) (db.Product, error)
+		GetProducts(ctx context.Context) ([]db.Product, error)
+		GetBaskets(ctx context.Context) ([]db.Basket, error)
 	}
-}
+	AdminService struct {
+		storage     IStorage
+		loginClient login_v1.LoginV1Client
+	}
+)
 
-type service struct {
-	store      storage.IStorage
-	authClient desc.AuthV1Client
+func NewAdminService(storage IStorage, loginClient login_v1.LoginV1Client) *AdminService {
+	return &AdminService{
+		storage:     storage,
+		loginClient: loginClient,
+	}
 }
