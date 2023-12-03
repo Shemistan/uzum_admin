@@ -1,0 +1,92 @@
+syntax="proto3";
+
+option go_package="github.com/Shemistan/uzum_auth/generated/admin_v1;admin_v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+service shop_service {
+  rpc get_product (Product.GetRequest) returns (Product.GetResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/product/get/{product_id}"
+    };
+  }
+  rpc get_products (google.protobuf.Empty) returns (Products.GetResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/products"
+    };
+  }
+  rpc add_product(Product.CreateRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/admin/v1/product/add"
+      body: "*"
+    };
+  }
+  rpc delete_product (Product.DeleteRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/admin/v1/product/delete/{product_id}"
+    };
+  }
+  rpc update_product (Product.UpdateRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/admin/v1/product/update"
+      body: "*"
+    };
+  }
+  rpc get_statistics (google.protobuf.Empty) returns (Statistics.GetResponse) {
+    option (google.api.http) = {
+      get: "/admin/v1/statistics"
+    };
+  }
+}
+
+message Product {
+  message GetRequest {
+    string product_id = 1;
+  }
+  message GetResponse {
+    ProductInfo product = 1;
+  }
+  message CreateRequest {
+    ProductInfo product = 1;
+  }
+  message DeleteRequest {
+    string product_id = 1;
+  }
+  message UpdateRequest {
+    ProductInfo product = 1;
+  }
+}
+
+message Products {
+  message GetResponse {
+    repeated ShortProductInfo products = 1;
+  }
+}
+
+message Statistics {
+  message GetResponse {
+    repeated Sales sales = 1;
+    float total_income = 2;
+  }
+}
+
+message ProductInfo {
+  string product_id = 1;
+  string name = 2;
+  string description = 3;
+  float price = 4;
+  uint32 quantity = 5;
+}
+
+message ShortProductInfo{
+  string product_id = 1;
+  string name = 2;
+  float price = 3;
+}
+
+message Sales{
+  string product_name = 1;
+  uint32 product_sales = 2;
+}
+
