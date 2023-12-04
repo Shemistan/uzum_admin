@@ -6,5 +6,5 @@ import (
 )
 
 func (s *service) GetAllProducts(ctx context.Context) ([]*models.Product, error) {
-	return s.store.GetAllProducts(ctx)
+	return s.storage.GetAllProducts(ctx)
 }
