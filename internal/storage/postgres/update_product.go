@@ -4,6 +4,7 @@ import (
 	"context"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/Shemistan/uzum_admin/internal/models"
+	"log"
 )
 
 func (r *repo) UpdateProduct(ctx context.Context, req *models.Product) error {
@@ -17,7 +18,8 @@ func (r *repo) UpdateProduct(ctx context.Context, req *models.Product) error {
 		RunWith(r.db).
 		PlaceholderFormat(sq.Dollar)
 
-	_, err := builder.ExecContext(ctx)
+	resp, err := builder.ExecContext(ctx)
+	log.Printf("---> %+v", resp)
 	if err != nil {
 		return err
 	}

@@ -10,7 +10,6 @@ type IStorage interface {
 	AddProduct(ctx context.Context, req *models.Product) (int64, error)
 	UpdateProduct(ctx context.Context, req *models.Product) error
 	GetAllProducts(ctx context.Context) ([]*models.Product, error)
-	//GetProduct(ctx context.Context, id int64) (*models.Product, error)
-	//GetAllProducts(ctx context.Context) ([]*models.Product, error)
-	//DeleteProduct(ctx context.Context, id int64) error
+	GetProduct(ctx context.Context, id int) (*models.Product, error)
+	DeleteProduct(ctx context.Context, id int) error
 }
